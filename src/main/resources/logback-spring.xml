@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration debug="true">
+
+	<property name="MDC_BASE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS zzz},fbRequestId=%X{fbRequestId},thread=%t,class=%c{1.},level=%-5level,operation=%X{operation},fbMsgType=%X{fbMsgType},convId=%X{convId},convType=%X{convType},fbPageId=%X{fbPageId},isSuccess=%X{isSuccess}"/>
+    <property name="MDC_ALL_ITEMS_PATTERN" value="UnidentifiedText=%X{UnidentifiedText},CustomerMessage=%X{CustomerMessage}, forwardingMsgUsingURL=%X{forwardingMsgUsingURL}, forwardingURLResponse=%X{forwardingURLResponse}, contextReadDurMs=%X{contextReadDurMs}, domainDataReadDurMs=%X{domainDataReadDurMs}, domainDataScanDurMs=%X{domainDataScanDurMs}, UserInfoObjectSize=%X{UserInfoObjectSize}, TextToBeClassified=%X{TextToBeClassified}, NLPIntent=%X{NLPIntent}, NLPResponse=%X{NLPResponse}, NumberOfBookings=%X{NumberOfBookings}, validatedBooking=%X{validatedBooking}, last4OfCC=%X{last4OfCC}, voyagerLookupBookingDetailsTotalDurMs=%X{voyagerLookupBookingDetailsTotalDurMs}, voyagerLookupBookingDetailsPropertySumDurMs=%X{voyagerLookupBookingDetailsPropertySumDurMs}, voyagerLookupBookingDetailsCancelDeetsDurMs=%X{voyagerLookupBookingDetailsCancelDeetsDurMs}, voyagerSearchBookingSummariesDurMs=%X{voyagerSearchBookingSummariesDurMs}, voyagerLookupBookingsTotalDurMs=%X{voyagerLookupBookingsTotalDurMs}, itin=%X{itin}, CapturedEmail=%X{CapturedEmail}, CapturedPhoneNumber=%X{CapturedPhoneNumber}, jsonReply=%X{jsonReply}, fburl=%X{fburl}, contextKey=%X{contextKey}"/>
+	<!--  These loggers can be overridden later in this file --> 
+	<Logger name="com.amazonaws" level="INFO" />
+    <logger name="org.springframework" level="INFO" />
+	<Logger name="org.apache.http" level="ERROR" /> <!-- change to debug for wire msgs --> 
+
+	<if condition='property("spring.profiles.active").contains("prod") || property("spring.profiles.active").contains("lab")'>
+        <then>
+        
+         	<!-- setup rolling file appender -->
+         	<appender name="ROLLINGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${catalina.base}/logs/ABotLog.log</file>
+                <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+                    <fileNamePattern>${catalina.base}/logs/GCOBotLog.%i.log</fileNamePattern>
+                    <minIndex>1</minIndex>
+                    <maxIndex>10</maxIndex>
+                </rollingPolicy>
+
+                <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                    <maxFileSize>50MB</maxFileSize>
+                </triggeringPolicy>
+
+                <encoder>
+                    <charset>UTF-8</charset>
+                    <pattern>${MDC_BASE_PATTERN}, ${MDC_ALL_ITEMS_PATTERN} ,msg=%msg%n%ex{full}</pattern>
+                </encoder>
+            </appender>
+            
+            <!-- setup mon file appender -->
+         	<appender name="ROLLINGMONFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${catalina.base}/logs/ABotMonLog.log</file>
+                <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+                    <fileNamePattern>${catalina.base}/logs/GCOBotMonLog.%i.log</fileNamePattern>
+                    <minIndex>1</minIndex>
+                    <maxIndex>10</maxIndex>
+                </rollingPolicy>
+
+                <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                    <maxFileSize>10MB</maxFileSize>
+                </triggeringPolicy>
+				<filter class="ch.qos.logback.classic.filter.LevelFilter">
+      				<level>INFO</level>
+      				<onMatch>ACCEPT</onMatch>
+      				<onMismatch>DENY</onMismatch>
+    			</filter>
+                <encoder>
+                    <charset>UTF-8</charset>
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS zzz}, thread=%t, %X, level=%-5level, msg=%msg%n</pattern>
+                </encoder>
+            </appender>
+            
+         	<!-- See http://logback.qos.ch/manual/appenders.html#AsyncAppender -->
+            <!--
+                By default, when less than 20% of the queue capacity remains, AsyncAppender will drop events
+                of level TRACE, DEBUG and INFO keeping only events of level WARN and ERROR. This strategy ensures
+                non-blocking handling of logging events (hence excellent performance) at the cost loosing events
+                of level TRACE, DEBUG and INFO when the queue has less than 20% capacity. Event loss can be
+                prevented by setting the discardingThreshold property to 0 (zero).
+            -->
+            <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+                <appender-ref ref="ROLLINGFILE" />
+            </appender>
+            
+            <if condition='property("spring.profiles.active").contains("lab")'>
+        	        <then>
+        	        	<!-- configure for Lab -->
+            			<logger name="com.adarsh" level="DEBUG" additivity="false">
+                			<appender-ref ref="ASYNC" />
+            			</logger>
+        			</then>
+        	</if>		
+            
+            <logger name="com.adarsh.abot.facebook.ConversationDispatcher">
+                <appender-ref ref="ROLLINGMONFILE" />
+            </logger>
+
+            <root level="INFO">
+                <appender-ref ref="ASYNC" />
+            </root>
+        </then>
+        <else>
+        	<!-- configure for IDE -->
+        	<conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+        	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+               <encoder>
+                  <charset>UTF-8</charset>
+                  <pattern>%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %X %msg%n%ex{full}</pattern>
+               </encoder>
+            </appender>
+
+        	<root level="DEBUG">
+                <appender-ref ref="CONSOLE" />
+            </root>
+        </else>
+    </if>
+    
+ </configuration>

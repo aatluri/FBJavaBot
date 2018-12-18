@@ -1,0 +1,12 @@
+package com.adarsh.fbjavabot.facebook.util;
+
+/**
+ * All events supported by Fb Messenger Bot API.
+ */
+public enum EventType {
+
+    ACK, SUBSCRIBE,MESSAGE,
+    MESSAGE_DELIVERED, MESSAGE_READ, MESSAGE_ECHO, POSTBACK, OPT_IN, REFERRAL, PAYMENT, CHECKOUT_UPDATE,
+    PRE_CHECKOUT, ACCOUNT_LINKING, QUICK_REPLY, MEMBER_JOINED_CHANNEL, MEMBER_LEFT_CHANNEL
+
+}
