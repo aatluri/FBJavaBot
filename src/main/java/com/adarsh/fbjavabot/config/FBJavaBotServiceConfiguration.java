@@ -23,6 +23,13 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestTemplate;
 
+
+
+/**
+ * @author aatluri
+ * This class sets up all the variables needed for the application on startup
+ */
+
 @Configuration
 @EnableAsync
 public class FBJavaBotServiceConfiguration extends AsyncConfigurerSupport

@@ -11,7 +11,12 @@ import org.springframework.cache.annotation.EnableCaching;
 public class FBJavaBot extends SpringBootServletInitializer
 {
 
-	// This method would be called from cmd line and start embedded Tomcat
+    /**
+     * Entry point of the application. Run this method to start the sample bots,
+     * but don't forget to add the correct tokens in application.properties file as indicated in the readme file.
+     *
+     * @param args
+     */
 	public static void main(String[] args)
 	{
 		SpringApplication.run(FBJavaBot.class, args);

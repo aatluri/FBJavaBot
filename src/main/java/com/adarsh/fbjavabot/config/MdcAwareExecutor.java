@@ -15,7 +15,7 @@ import org.springframework.core.task.TaskExecutor;
  * thread pool.
  * </p>
  * 
- * @author Ryan Hilfers
+ * @author aatluri
  */
 public class MdcAwareExecutor implements Executor, TaskExecutor
 {

@@ -27,7 +27,6 @@ import com.adarsh.fbjavabot.facebook.model.Event;
 import com.adarsh.fbjavabot.facebook.model.FBRequestMsg;
 import com.adarsh.fbjavabot.facebook.model.Payload;
 import com.adarsh.fbjavabot.facebook.model.Postback;
-import com.adarsh.fbjavabot.facebook.service.FacebookReplyService;
 import com.adarsh.fbjavabot.facebook.util.EventType;
 import com.adarsh.fbjavabot.facebook.util.ExecutionStatus;
 import com.adarsh.fbjavabot.facebook.util.LoggingHelper;
@@ -54,6 +53,8 @@ public class WebhookController
 	private ConversationDispatcher dispatcher;
 	private String pageToken;
 
+	
+	
 	@Autowired
 	public WebhookController(String verifyToken, String appSecret, String fbThreadSettingsUrl, FacebookReplyService fbReplyService, ConversationDispatcher dispatcher, String pageToken  )
 	{
@@ -68,6 +69,12 @@ public class WebhookController
 		writer = mapper.writer();
 	}
 
+	/**
+     * Add the webhook endpoint
+     *
+     * @param callback
+     * @return 200 OK response
+     */
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity setupWebHook(
@@ -121,7 +128,7 @@ public class WebhookController
 		try
 		{
 			FBRequestMsg fbMsgRequest = mapper.readValue(request, FBRequestMsg.class);
-			log.info("Unmarshalled FbMsgRequest=" + writer.writeValueAsString(fbMsgRequest));
+			//log.info("Unmarshalled FbMsgRequest=" + writer.writeValueAsString(fbMsgRequest));
 			for(Entry pageEntry : fbMsgRequest.getEntry())
 			{
 				String pageId = pageEntry.getId();
@@ -145,6 +152,18 @@ public class WebhookController
 		return ResponseEntity.ok("EVENT_RECEIVED");
 	}
 
+	 /**
+     * Call this endpoint with a json payload in the request body which consists of the below
+     *  {
+     *  	"greetingText":<actual greeting text>
+     *  	"getStartedButtonPayload":<Text that shows on the button>
+     *  }
+     * <p>
+     * See https://developers.facebook.com/docs/messenger-platform/discovery/welcome-screen for more.
+     * @return response from facebook
+     */
+	
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/setPageGreeting", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public HttpStatus setPageGreeting(
@@ -195,7 +214,11 @@ public class WebhookController
 		}
 	}
 
-	
+	/**
+     * Verifies that the incoming request is actually from facebook
+     * It compares the appSecret which can be obtained from facebook app dashboard to a hash of the requestbody
+     * @return boolean
+     */
 	public static boolean verifySignature(HttpServletRequest httpReq, String appsecret, String requestBody)
 	{
 		try
