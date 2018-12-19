@@ -4,6 +4,7 @@ This is a framework which will help you get started with a facebook bot in a few
 ## Features
 1. Consists of the boiler plate code that takes care of providing a public endpoint to integrate with facebook
 2. Consists of the boiler plate code which will show you how to respond to facebook using text, buttons, quick replies etc...
+3. Includes an exposed endpoint which can be called to set the greeting text when a user first starts chatting with the bot.
 3. Includes verification of the incoming request using hashing to ensure the request is coming from facebook
 4. Includes a feature where the application immedietely responds to facebook with an OK event received and then actually processes the event asynchronously. This will avoid situations where facebook sends the same event multiple times thereby causing the bot to send duplicate messages back to facebook.
 5. Includes Detailed logging which will help you troubleshoot
