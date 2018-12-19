@@ -127,6 +127,35 @@ public class ConversationDispatcher
 		}
 	}
 	
+	
+	
+	
+	
+
+	
+/**	
+ * Curl commans to whitelist domains or urls that are being used.
+	curl -X POST -H "Content-Type: application/json" -d '
+	{
+	  "setting_type" : "domain_whitelisting",
+	  "domain_action_type": "add",
+	  "whitelisted_domains":[
+	    "https://plugins.compzets.com/",
+	    "https://www.facebook.com/"
+	  ]
+	}' "https://graph.facebook.com/v2.10/me/messenger_profile?access_token=<PAGE TOKEN>"
+	
+**/	
+	
+	/**
+	 * 
+	 * 
+	 * Method that creates an element for a list
+	 * @param event
+	 * 
+	 * 
+	 */
+	
 	private void displayList(Event event) 
 	{
 		Element[] elements = new Element[]{
@@ -143,6 +172,14 @@ public class ConversationDispatcher
                 .setTemplateType("list").setElements(elements))));
 	}
 	
+	/**
+	 * 
+	 * 
+	 * Method that creates buttons
+	 * @param event
+	 * 
+	 * 
+	 */
 	private void displayButtons(Event event) 
 	{
 		Button[] buttons = new Button[]{
@@ -153,6 +190,15 @@ public class ConversationDispatcher
                 .setTemplateType("button").setText("These are 2 link buttons.").setButtons(buttons))));
 	}
 	
+	
+	/**
+	 * 
+	 * 
+	 * Method that creates an quick reply buttons
+	 * @param event
+	 * 
+	 * 
+	 */
 	private void displayQuickRelpyButtons(Event event)
 	{
 		String prompt = "Hi there, How are you doing?. The two buttons you see below are quick reply buttons. There are also normal buttons and lists. Click on the button below depending on what you want to see";
