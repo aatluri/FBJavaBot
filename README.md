@@ -39,12 +39,13 @@ This is a framework which will help you get started with a facebook bot in a few
 6. Generate a Page Access Token : Under Messenger Settings, Scroll down and under Token generation, Select the page you created above from the drop down. If you are not able to see your page in the drop down, it means you are not an admin on the page. Now copy the token generated to the https://github.com/aatluri/FBJavaBot/blob/master/src/main/resources/application.properties
 7. In the Same page, you will see a section called Webhooks. Here Click oin Edit Events and subscribe to messages, messaging_postbacks, messaging_optins, message_echoes
 8. Right below this, you will see "Select a page to subscribe your webhook to the page events". Select your facebook page here. If you are not able to see your page, it means you are not an admin on the page.
-7. Go to the App Basic Settings page and get the appSecret and copy it to the https://github.com/aatluri/FBJavaBot/blob/master/src/main/resources/application.properties file
-8.Go to Webhook and click on Edit Subscription. 
+7. Go to the App Basic Settings page and get the appSecret and copy it to the https://github.com/aatluri/FBJavaBot/blob/master/src/main/resources/application.properties file . Restart your application
+8. Go to Webhook and click on Edit Subscription. 
 9. Paste https://<alphanumeric text>.ngrok.io/FBJavaBot/fbwebhook in Callback URL
 10. Paste the value of the facebook.verifytoken property in the https://github.com/aatluri/FBJavaBot/blob/master/src/main/resources/application.properties file in the Verify Token box.
 11. Click on Verify and Save. If all goes right it should just close the pop up and go back to the Webhooks page. If you go back to your IDE or local command line where you arte running the application, you should see some logs which indicate that a call was made to the fbwebhook endpoint with a success.
 12. Now your page, app and bot endpoint are all connected.
+13. Remember to restart your application after your make any updates to the application.properties file.
 
 **Chat with the Facebook Bot**
 1. Go back to your facebook page
