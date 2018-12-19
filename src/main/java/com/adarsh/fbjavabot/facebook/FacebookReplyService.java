@@ -1,5 +1,5 @@
 
-package com.adarsh.fbjavabot.facebook.service;
+package com.adarsh.fbjavabot.facebook;
 
 import com.adarsh.fbjavabot.facebook.model.Event;
 import com.adarsh.fbjavabot.facebook.model.Message;
@@ -18,6 +18,14 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+
+/**
+ * This class is where the application sends to the reply to the facebook page post processing the event.
+ * 
+ * 
+ * @author aatluri
+ */
 
 @Component
 public class FacebookReplyService
@@ -40,7 +48,10 @@ public class FacebookReplyService
 		this.pageToken = pageToken;
 	}
 
-	
+	/**
+	 * Sends the reply to the facebook page
+	 * 
+	 */
 	public ResponseEntity<String> sendReply(String url,Event event)
 	{
 		try
@@ -64,6 +75,10 @@ public class FacebookReplyService
 		}
 	}
 	
+	/**
+	 * Constructs the event to sent back to facebook when we need to send back just text
+	 * 
+	 */
     public ResponseEntity<String> reply(Event event, String text) {
         Event response = new Event()
                 .setMessagingType("RESPONSE")
@@ -71,6 +86,11 @@ public class FacebookReplyService
                 .setMessage(new Message().setText(text));
         return sendReply(fbMessageUrl,response);
     }
+    
+    /**
+	 * Constructs the event to sent back to facebook when we need to send back more complex events like buttons, attachments etc..
+	 * 
+	 */
 
     public ResponseEntity<String> reply(Event event, Message message) {
         Event response = new Event()
@@ -80,11 +100,19 @@ public class FacebookReplyService
         return sendReply(fbMessageUrl,response);
     }
 
+    /**
+	 * Used to send the typing on indicator which displays a graphic to the user that indicates that the bot is replying shortly.
+	 * 
+	 */
   	public void sendTypingOnIndicator(User recipient) 
   	{
   		fbRestTemplate.postForEntity(fbMessageUrl, new Event().setRecipient(recipient).setSenderAction("typing_on"), Response.class);
     }
 
+  	/**
+	 * Used to send the typing off indicator which removes the typing graphic to the user that indicates that the bot is replying shortly.
+	 * 
+	 */
     public void sendTypingOffIndicator(User recipient) 
     {
     	fbRestTemplate.postForEntity(fbMessageUrl,new Event().setRecipient(recipient).setSenderAction("typing_off"), Response.class);
